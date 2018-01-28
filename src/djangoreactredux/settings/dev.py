@@ -28,6 +28,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/django/debug.log',
+        },
         'django_rest_logger_handler': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
