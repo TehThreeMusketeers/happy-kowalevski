@@ -21,6 +21,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
 
+    'requests',
     'rest_framework',
     'knox',
     'django_extensions',
