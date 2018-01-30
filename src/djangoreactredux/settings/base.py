@@ -108,3 +108,8 @@ REST_KNOX = {
     'AUTH_TOKEN_CHARACTER_LENGTH': 64,
     'USER_SERIALIZER': 'knox.serializers.UserSerializer'
 }
+
+######## Particle Cloud Settings #############
+PARTICLE_PRODUCT_ID = os.environ['PARTICLE_PRODUCT_ID'] 
+PARTICLE_API_KEY = os.environ['PARTICLE_API_KEY']
+PARTICLE_API_CLIENT = os.environ['PARTICLE_API_CLIENT']

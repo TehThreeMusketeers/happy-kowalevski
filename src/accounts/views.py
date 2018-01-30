@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_rest_logger import log
+from django.conf import settings
 from knox.auth import TokenAuthentication
 from knox.models import AuthToken
 from rest_framework import status
@@ -13,14 +14,38 @@ from accounts.models import User
 from accounts.serializers import UserRegistrationSerializer, UserSerializer
 from lib.utils import AtomicMixin
 
+import requests, json
+from requests.auth import HTTPBasicAuth
 
 class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
     serializer_class = UserRegistrationSerializer
     authentication_classes = ()
 
     def post(self, request):
-        """User registration view."""
-        return self.create(request)
+        """ Creates a user locally & on the particle cloud"""
+
+        response = requests.post("https://api.particle.io/v1/products/" +
+                      str(settings.PARTICLE_PRODUCT_ID) + "/customers",
+                      auth=(settings.PARTICLE_API_CLIENT,
+                              settings.PARTICLE_API_KEY),
+                      json={
+                        "email": request.data['email'], 
+                        "no_password": "true"
+                    })
+
+        if response.status_code == 201:
+            print("Access token is: " + response.json()['access_token'])
+            request.data['access_token'] = response.json()['access_token']
+            request.data['refresh_token'] = response.json()['refresh_token']
+
+            return self.create(request)
+
+        print(response.content)
+        return Response(
+                    data=json.loads(response.content.decode()),
+                    status=response.status_code,
+                    content_type=response.headers['Content-Type']
+                )
 
 
 class UserLoginView(GenericAPIView):
