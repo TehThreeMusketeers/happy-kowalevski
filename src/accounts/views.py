@@ -24,6 +24,9 @@ class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
     def post(self, request):
         """ Creates a user locally & on the particle cloud"""
 
+        if 'email' not in request.data:
+            request.data['email'] = 'notanemail' #sorry!
+
         response = requests.post("https://api.particle.io/v1/products/" +
                       str(settings.PARTICLE_PRODUCT_ID) + "/customers",
                       auth=(settings.PARTICLE_API_CLIENT,
