@@ -1,0 +1,150 @@
+#%RAML 1.0
+    title: A RESTful API for a user & device management server
+
+/api/v1:
+  /accounts:
+    description: User accounts on the server
+    post:
+      description: Creates a user account on the server
+      body:
+        application/json:
+          type: user
+          example: |
+            {
+              "email": "sick@account.com",
+              "password": "password",
+              "first_name": "George",
+              "last_name": "Anderson"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "id": "b3dcb087-6b9e-470e-977d-38f03dad5cf4",
+                  "email": "sick@account.com",
+                  "first_name": "George",
+                  "last_name": "Anderson",
+                  "access_token": "laksjdhfljahsdbvfklabsdfkjh2384ysdjfhba770aw3br087bawfs",
+                  "password": "pbkdf2_sha256$36000$2IuAdqcZlhDq$O9G/EykpJiu4X0ddhkrUARpbQ6gqeYi+cfe0g34Gf5I="
+                }
+    /session:
+      post:
+        description: Creates a new login session for a user
+        body:
+          application/json:
+            type: login
+            example: |
+              {
+                "email": "sick@account.com",
+                "password": "blah123"
+              }
+  /devices:
+    post:
+      description: Creates a device on the server 
+      headers:
+        authorization_token:
+          description: A valid authorization token for the owning user
+          required: true
+          type: string
+          example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+        csrf_token:
+          description: the CSRF token issued by django
+          required: true
+          type: string
+          example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+        body:
+          application/json:
+            type: device 
+            example: |
+              {
+                "deviceId": "somenumbersasdf123",
+                "type": "Sensor",
+                "location": "TODO",
+                "anything":"else"
+              }
+    get:
+      description: Get a list of devices for a user
+      headers:
+        authorization_token:
+          description: A valid authorization token for the owning user
+          required: true
+          type: string
+          example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+    /{deviceID}:
+      get:
+        description: Get a device
+        headers:
+          authorization_token:
+            description: A valid authorization token for the owning user
+            required: true
+            type: string
+            example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+      put:
+        description: Update device details
+        headers:
+          authorization_token:
+            description: A valid authorization token for the owning user
+            required: true
+            type: string
+            example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+          csrf_token:
+            description: the CSRF token issued by django
+            required: true
+            type: string
+            example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+        body:
+          application/json:
+            type: device 
+      /sensordata:
+        /all:
+          get:
+            description: Get all data for this device
+            headers:
+              authorization_token:
+                description: A valid authorization token for the owning user
+                required: true
+                type: string
+                example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+            queryParameters:
+              count:
+                displayName: count
+                type: integer
+                description: Number of temp readings to get.
+                example: 2
+                required: false
+        /temp:
+          get:
+            description: Get temperature data for this device
+            headers:
+              authorization_token:
+                description: A valid authorization token for the owning user
+                required: true
+                type: string
+                example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+            queryParameters:
+              count:
+                displayName: count
+                type: integer
+                description: Number of temp readings to get.
+                example: 2
+                required: false
+      /groups:
+        post:
+          description: Creates a new group of devices
+          headers:
+            authorization_token:
+              description: A valid authorization token for the owning user
+              required: true
+              type: string
+              example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+            csrf_token:
+              description: the CSRF token issued by django
+              required: true
+              type: string
+              example: asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+          body:
+            application/json:
+              type: group
+
