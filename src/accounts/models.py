@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MyUserManager(BaseUserManager):
-    def _create_user(self, email, password, first_name, last_name, is_staff, is_superuser, **extra_fields):
+    def _create_user(self, email, password, first_name, last_name, access_token, refresh_token, is_staff, is_superuser, **extra_fields):
         """
         Create and save an User with the given email, password, name and phone number.
 
@@ -27,6 +27,8 @@ class MyUserManager(BaseUserManager):
         user = self.model(email=email,
                           first_name=first_name,
                           last_name=last_name,
+                          access_token=access_token,
+                          refresh_token=refresh_token,
                           is_staff=is_staff,
                           is_active=True,
                           is_superuser=is_superuser,
@@ -37,7 +39,7 @@ class MyUserManager(BaseUserManager):
 
         return user
 
-    def create_user(self, email, first_name, last_name, password, **extra_fields):
+    def create_user(self, email, first_name, last_name, access_token, refresh_token, password, **extra_fields):
         """
         Create and save an User with the given email, password and name.
 
@@ -49,10 +51,10 @@ class MyUserManager(BaseUserManager):
         :return: User
         """
 
-        return self._create_user(email, password, first_name, last_name, is_staff=False, is_superuser=False,
+        return self._create_user(email, password, first_name, last_name, access_token, refresh_token, is_staff=False, is_superuser=False,
                                  **extra_fields)
 
-    def create_superuser(self, email, first_name='', last_name='', password=None, **extra_fields):
+    def create_superuser(self, email, first_name='', last_name='',access_token='', refresh_token='', password=None, **extra_fields):
         """
         Create a super user.
 
@@ -85,6 +87,8 @@ class User(AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # pylint: disable=invalid-name
 
     first_name = models.CharField(_('First Name'), max_length=50)
+    access_token = models.CharField(_('Access Token'), max_length=50)
+    refresh_token = models.CharField(_('Refresh Token'), max_length=50)
     last_name = models.CharField(_('Last Name'), max_length=50)
     email = models.EmailField(_('Email address'), unique=True)
 

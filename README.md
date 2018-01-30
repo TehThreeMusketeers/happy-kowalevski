@@ -164,18 +164,15 @@ We deploy all our production code using Kubernetes. Explaining how to do deploym
 Here's a great article from digital ocean on how to deploy django project in a VM: https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04 
 
 
+# Changes to User Model
 
-## Screenshots
+If you have errors involving missing columns in the user table, then: -
 
-Here are some screenshots of the boilerplate project.
+  `ALTER TABLE accounts_user 
+    ADD COLUMN access_token VARCHAR;
 
-![Screenshot01][1]  
-
-[1]: ./screenshots/screenshot_01.png
-
-![Screenshot02][2]  
-
-[2]: ./screenshots/screenshot_02.png
+  ALTER TABLE accounts_user 
+    ADD COLUMN refresh_token VARCHAR;`
 
 
 ## Gotchas in Docker

@@ -25,6 +25,8 @@ services:
             service: django
         links:
             - postgres
+
+        env_file: .env
         entrypoint:
             - /django-entrypoint.sh
         expose:

@@ -21,6 +21,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
 
+    'requests',
     'rest_framework',
     'knox',
     'django_extensions',
@@ -34,7 +35,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+#    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -108,3 +109,8 @@ REST_KNOX = {
     'AUTH_TOKEN_CHARACTER_LENGTH': 64,
     'USER_SERIALIZER': 'knox.serializers.UserSerializer'
 }
+
+######## Particle Cloud Settings #############
+PARTICLE_PRODUCT_ID = os.environ['PARTICLE_PRODUCT_ID'] 
+PARTICLE_API_KEY = os.environ['PARTICLE_API_KEY']
+PARTICLE_API_CLIENT = os.environ['PARTICLE_API_CLIENT']
