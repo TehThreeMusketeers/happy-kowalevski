@@ -177,6 +177,16 @@ Here are some screenshots of the boilerplate project.
 
 [2]: ./screenshots/screenshot_02.png
 
+# Changes to User Model
+
+Might be necessary to run: -
+  ALTER TABLE accounts_user 
+    ADD COLUMN access_token VARCHAR;
+
+  ALTER TABLE accounts_user 
+    ADD COLUMN refresh_token VARCHAR;
+
+
 
 ## Gotchas in Docker
 
