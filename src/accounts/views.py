@@ -14,7 +14,7 @@ from accounts.serializers import UserRegistrationSerializer, UserSerializer
 from lib.utils import AtomicMixin
 
 
-class UserRegisterView(AtomicMixin, CreateModelMixin, GenericAPIView):
+class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
     serializer_class = UserRegistrationSerializer
     authentication_classes = ()
 

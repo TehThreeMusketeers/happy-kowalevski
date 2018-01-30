@@ -66,6 +66,7 @@
     "redux-thunk": "2.2.0",
     "resolve-url-loader": "2.1.0",
     "sass-loader": "6.0.6",
+    "softap-setup": "^4.1.0",
     "style-loader": "0.18.2",
     "tcomb-form": "0.9.17",
     "url-loader": "0.5.9",
