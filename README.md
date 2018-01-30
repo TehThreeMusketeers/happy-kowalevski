@@ -168,21 +168,11 @@ Here's a great article from digital ocean on how to deploy django project in a V
 
 If you have errors involving missing columns in the user table, then: -
 
-  ALTER TABLE accounts_user 
+  `ALTER TABLE accounts_user 
     ADD COLUMN access_token VARCHAR;
 
   ALTER TABLE accounts_user 
-    ADD COLUMN refresh_token VARCHAR;
-
-# Changes to User Model
-
-Might be necessary to run: -
-  ALTER TABLE accounts_user 
-    ADD COLUMN access_token VARCHAR;
-
-  ALTER TABLE accounts_user 
-    ADD COLUMN refresh_token VARCHAR;
-
+    ADD COLUMN refresh_token VARCHAR;`
 
 
 ## Gotchas in Docker
