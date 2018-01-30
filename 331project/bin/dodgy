@@ -1,4 +1,0 @@
-#!/home/osboxes/331/happy-kowalevski/331project/bin/python3
-
-import dodgy.run
-dodgy.run.run()
