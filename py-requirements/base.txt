@@ -12,6 +12,9 @@ whitenoise==3.3.0
 # Rest Framework
 djangorestframework==3.6.4
 
+# Requests
+requests==2.14.2
+
 # Sentry
 raven==6.1.0
 

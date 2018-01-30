@@ -174,6 +174,16 @@ If you have errors involving missing columns in the user table, then: -
   ALTER TABLE accounts_user 
     ADD COLUMN refresh_token VARCHAR;
 
+# Changes to User Model
+
+Might be necessary to run: -
+  ALTER TABLE accounts_user 
+    ADD COLUMN access_token VARCHAR;
+
+  ALTER TABLE accounts_user 
+    ADD COLUMN refresh_token VARCHAR;
+
+
 
 ## Gotchas in Docker
 
