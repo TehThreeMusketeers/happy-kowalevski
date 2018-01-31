@@ -12,3 +12,23 @@ class DeviceTypeSerializer(serializers.ModelSerializer):
         model = DeviceType
         fields = ('value',)
 
+
+class TempReadingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TempReading
+        fields = ('device','value',)
+
+class HumReadingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HumReading
+        fields = ('device', 'value')
+
+class AmbLightReadingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AmbLightReading
+        fields = ('device','value')
+
+class MovementReadingSerializer(serializers:ModelSerializer):
+    class Meta:
+        model = MovementReading
+        fields = ('device',)

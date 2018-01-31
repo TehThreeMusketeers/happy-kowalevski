@@ -25,7 +25,16 @@ class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
         """ Creates a user locally & on the particle cloud"""
 
         if 'email' not in request.data:
-            request.data['email'] = 'notanemail' #sorry!
+            return Response(
+                    data=json.loads("message" : "Email argument missing."),
+                    status=status.HTTP_400_BAD_REQUEST,
+                    content_type=response.headers['Content-Type'])
+
+        if (response.headers['Content-Type'] == 'application/x-www-form-urlencoded'):
+            return Response(
+                    data=json.loads("message" : "Content type must be application/json"),
+                    status=status.HTTP_405_METHOD_NOT_ALLOWED,
+                    content_type=response.headers['Content-Type'])
 
         response = requests.post("https://api.particle.io/v1/products/" +
                       str(settings.PARTICLE_PRODUCT_ID) + "/customers",
