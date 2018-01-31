@@ -1,10 +1,14 @@
 from rest_framework import serializers
 
-from devices.models import Device
+from devices.models import Device, DeviceType
 
 class DeviceSerializer(serializers.ModelSerializer):
-    #TODO how do relations work with serializers?
     class Meta:
         model = Device 
-        fields = ('deviceId')
+        fields = ('deviceId','user','deviceType',)
+
+class DeviceTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceType
+        fields = ('value',)
 
