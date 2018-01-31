@@ -1,10 +1,11 @@
 from django.conf.urls import url
 
-from devices import views as devices_views
+from django.utils.translation import ugettext_lazy as _
+import devices.views
 
 urlpatterns = [
-    url(r'',
-        devices_views.DeviceRegisterView.as_view(),
-        name='protected_data'),
+    url(_(r'^$'), #POST & GET devices
+        devices.views.DeviceView.as_view(),
+        name='manageDevice'),
    
 ]

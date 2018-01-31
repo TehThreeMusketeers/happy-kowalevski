@@ -10,27 +10,26 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
-class IndexView(View):
-    """Render main page."""
-
-    def get(self, request):
-        """Return html for main application page."""
-
-        abspath = open(os.path.join(settings.BASE_DIR, 'static_dist/index.html'), 'r')
-        return HttpResponse(content=abspath.read())
-
-
-class DeviceRegisterView(GenericAPIView):
+class DeviceView(GenericAPIView):
     """Return protected data main page."""
 
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        """Process GET request and return protected data."""
+        """Process GET request and return a list of users devices"""
 
         data = {
             'data': 'THIS IS THE PROTECTED STRING FROM SERVER',
         }
 
         return Response(data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        """Process POST request and create device for current user"""
+
+        data = {
+            'data': 'THIS IS THE PROTECTED STRING FROM SERVER',
+        }
+
+        return Response(data, status=status.HTTP_201_CREATED)
