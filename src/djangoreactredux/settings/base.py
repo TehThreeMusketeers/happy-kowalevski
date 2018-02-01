@@ -11,6 +11,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','sccug-330-04.lancs.ac.uk']
 
+APPEND_SLASH = False
+
 # Application definition
 
 INSTALLED_APPS = (

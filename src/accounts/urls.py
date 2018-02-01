@@ -4,10 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 import accounts.views
 
 urlpatterns = [
-    url(_(r'^$'), #POST & GET users
+    url(_(r'^/$'), #POST & GET users
         accounts.views.UserView.as_view(),
         name='manageUser'),
-    url(_(r'^/session$'), #POST session
+    url(_(r'^/session/$'), #POST session
         accounts.views.UserLoginView.as_view(),
         name='createSession'),
     url(_(r'^/confirm/email/(?P<activation_key>.*)/$'),

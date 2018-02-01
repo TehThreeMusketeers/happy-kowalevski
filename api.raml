@@ -2,7 +2,7 @@
     title: A RESTful API for a user & device management server
 
 /api/v1:
-  /accounts:
+  /accounts/:
     description: User accounts on the server
     post:
       description: Creates a user account on the server
@@ -29,7 +29,7 @@
                   "access_token": "laksjdhfljahsdbvfklabsdfkjh2384ysdjfhba770aw3br087bawfs",
                   "password": "pbkdf2_sha256$36000$2IuAdqcZlhDq$O9G/EykpJiu4X0ddhkrUARpbQ6gqeYi+cfe0g34Gf5I="
                 }
-    /session:
+    /session/:
       post:
         description: Creates a new login session for a user
         headers:
@@ -48,7 +48,7 @@
             },
             "token": "0bebe5f987d33d8d02e8c2791a3b9ab5a4488606057049bb3cc8d8eb931de4be"
           }
-  /devices:
+  /devices/:
     post:
       description: Creates a device on the server 
       headers:
@@ -80,7 +80,7 @@
           required: true
           type: string
           example: Token asldkjfljh23lkjfsldkjfhasSeCReTToKEN
-    /{deviceID}:
+    /{deviceID}/:
       get:
         description: Get a device
         headers:
@@ -105,8 +105,8 @@
         body:
           application/json:
             type: device 
-      /sensordata:
-        /all:
+      /sensordata/:
+        /all/:
           get:
             description: Get all data for this device
             headers:
@@ -122,7 +122,7 @@
                 description: Number of temp readings to get.
                 example: 2
                 required: false
-        /temp:
+        /temp/:
           get:
             description: Get temperature data for this device
             headers:
@@ -138,7 +138,7 @@
                 description: Number of temp readings to get.
                 example: 2
                 required: false
-      /groups:
+      /groups/:
         post:
           description: Creates a new group of devices
           headers:

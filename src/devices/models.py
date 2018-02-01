@@ -7,14 +7,14 @@ from django.utils import timezone
 from accounts.models import User
 
 class DeviceType(models.Model):
-    value = models.CharField(max_length=50)
+    value = models.CharField(max_length=50, unique=True)
 
 class Device(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     deviceType = models.ForeignKey(DeviceType)
-    deviceId = models.CharField(max_length=50)
+    deviceId = models.CharField(max_length=50, unique=True)
+    deviceName = models.CharField(max_length=50,null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
-
 
 class TempReading(models.Model):
     device = models.ForeignKey(Device)

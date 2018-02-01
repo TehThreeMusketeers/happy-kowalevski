@@ -1,11 +1,10 @@
 from django.conf.urls import url
 
-from django.utils.translation import ugettext_lazy as _
-import devices.views
+from rest_framework.routers import SimpleRouter
+from devices.viewset import DeviceViewSet, DeviceTypeViewSet
 
-urlpatterns = [
-    url(_(r'^$'), #POST & GET devices
-        devices.views.DeviceView.as_view(),
-        name='manageDevice'),
-   
-]
+router = SimpleRouter()
+router.register(r'^/types', DeviceTypeViewSet)
+router.register(r'^', DeviceViewSet)
+
+urlpatterns = router.urls
