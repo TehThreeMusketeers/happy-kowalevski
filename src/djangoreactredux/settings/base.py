@@ -11,6 +11,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','sccug-330-04.lancs.ac.uk']
 
+APPEND_SLASH = False
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -27,7 +29,8 @@ INSTALLED_APPS = (
     'django_extensions',
 
     'accounts',
-    'base'
+    'base',
+    'devices',
 )
 
 MIDDLEWARE_CLASSES = (

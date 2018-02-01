@@ -43,7 +43,6 @@ class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
 
             return self.create(request)
 
-        print(response.content)
         return Response(
                     data=json.loads(response.content.decode()),
                     status=response.status_code,

@@ -126,6 +126,14 @@ The database can be accessed @localhost:5433
 * `$ psql -h localhost -p 5433 -U djangoreactredux djangoreactredux_dev`
 
 
+## When running python manage.py migrate
+
+Ensure you are using the correct settings!
+
+To run with specific settings - in the this case dev_docker - , use: -
+
+* `$ python manage.py migrate --settings=djangoreactredux.settings.dev_docker`
+
 ## Accessing Website
 
 The project has CORS enabled and the URL is hard-coded in javascript to http://localhost:8000 
