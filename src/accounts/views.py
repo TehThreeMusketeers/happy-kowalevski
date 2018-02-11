@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import CreateModelMixin
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -16,6 +17,7 @@ from lib.utils import AtomicMixin
 
 import requests, json
 from requests.auth import HTTPBasicAuth
+import common.util.particle as Particle 
 
 class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
     serializer_class = UserRegistrationSerializer
@@ -25,16 +27,9 @@ class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
         """ Creates a user locally & on the particle cloud"""
 
         if 'email' not in request.data:
-            request.data['email'] = 'notanemail' #sorry!
+            raise ValidationError({'email': ["Required",]})
 
-        response = requests.post("https://api.particle.io/v1/products/" +
-                      str(settings.PARTICLE_PRODUCT_ID) + "/customers",
-                      auth=(settings.PARTICLE_API_CLIENT,
-                              settings.PARTICLE_API_KEY),
-                      json={
-                        "email": request.data['email'], 
-                        "no_password": "true"
-                    })
+        response = Particle.createShadowAccount(request.data['email'])
 
         if response.status_code == 201:
             print("Access token is: " + response.json()['access_token'])
@@ -60,7 +55,8 @@ class UserLoginView(GenericAPIView):
         token = AuthToken.objects.create(request.user)
         return Response({
             'user': self.get_serializer(request.user).data,
-            'token': token
+            'token': token,
+            'access_token' : request.user.access_token,
         })
 
 
