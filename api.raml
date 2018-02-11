@@ -17,7 +17,7 @@
               "last_name": "Anderson"
             }
       responses:
-        200:
+        201:
           body:
             application/json:
               example: |
@@ -40,14 +40,15 @@
             example: Basic YUBhLmNvbTpxdw== 
         response:
           example: |
-          {
-            "user": {
-                "email": "a@a.com",
-                "first_name": "FirstName",
-                "last_name": "LastName"
-            },
-            "token": "0bebe5f987d33d8d02e8c2791a3b9ab5a4488606057049bb3cc8d8eb931de4be"
-          }
+            {
+              "user": {
+                  "email": "a@a.com",
+                  "first_name": "FirstName",
+                  "last_name": "LastName"
+              },
+              "token": "0bebe5f987d33d8d02e8c2791a3b9ab5a4488606057049bb3cc8d8eb931de4be",
+              "access_token" : "lkajshdfjasiikhdfjahsd1298hw8dgf0af098qh23rh7asd0fga0s87dfasef"
+            }
   /devices/:
     post:
       description: Creates a device on the server 
@@ -68,9 +69,7 @@
             example: |
               {
                 "deviceId": "somenumbersasdf123",
-                "type": "Sensor",
-                "location": "TODO",
-                "anything":"else"
+                "type": 1,
               }
     get:
       description: Get a list of devices for a user
@@ -80,6 +79,36 @@
           required: true
           type: string
           example: Token asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+      response:
+        example: |
+        {
+            "count": 3,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "id": 2,
+                    "deviceId": "myotherdevice",
+                    "deviceType": 1,
+                    "deviceName": null,
+                    "group": 21
+                },
+                {
+                    "id": 1,
+                    "deviceId": "mydevice",
+                    "deviceType": 1,
+                    "deviceName": null,
+                    "group": 21
+                },
+                {
+                    "id": 3,
+                    "deviceId": "myotherdevice1",
+                    "deviceType": 1,
+                    "deviceName": "dfdfdfy",
+                    "group": null
+                }
+            ]
+        }
     /{deviceID}/:
       get:
         description: Get a device
@@ -138,9 +167,10 @@
                 description: Number of temp readings to get.
                 example: 2
                 required: false
-      /groups/:
+    /groups/:
+      /types/:
         post:
-          description: Creates a new group of devices
+          description: Creates a new group type. Defines global group states
           headers:
             Authorization:
                description: A valid authorization token for the owning user
@@ -154,5 +184,79 @@
               example: csrftoken=asldkjfljh23lkjfsldkjfhasSeCReTToKEN
           body:
             application/json:
-              type: group
+              example: | 
+                {
+                  "name":"Burglar Alarm",
+                  "states" : [
+                    "ARMED",
+                    "DISARMED"
+                  ]
+                }
+      post:
+        description: Creates a new group of devices
+        headers:
+          Authorization:
+             description: A valid authorization token for the owning user
+             required: true
+             type: string
+             example: Token asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+          Cookie:
+            description: cookie containing CSRF token issued by django
+            required: true
+            type: string
+            example: csrftoken=asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+        body:
+          application/json:
+            example: | 
+              {
+                "name":"my first burglar alarm",
+                "type" : 1,
+                "devices" : [
+                  "my-device-ID",
+                  "my-other-device-ID"
+                ]
+              }
+        responses:
+          201:
+            body:
+              application/json:
+                example: |
+                  {
+                    "id": 21,
+                    "name": "burglar alarm"
+                  }
+      get:
+        description: Get a list of groups a user has
+        headers:
+          Authorization:
+             description: A valid authorization token for the owning user
+             required: true
+             type: string
+             example: Token asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+          Cookie:
+            description: cookie containing CSRF token issued by django
+            required: true
+            type: string
+            example: csrftoken=asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+        responses:
+          200:
+            body:
+              application/json:
+                example: | 
+      /{groupID}/:
+        get:
+          description: Get a specific group
+            Authorization:
+                description: A valid authorization token for the owning user
+                required: true
+                type: string
+                example: Token asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+            Cookie:
+                description: cookie containing CSRF token issued by django
+                required: true
+                type: string
+                example: csrftoken=asldkjfljh23lkjfsldkjfhasSeCReTToKEN
+        /triggers/: 
+          post:
+            description: Create a trigger for a group of devices
 
