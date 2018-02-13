@@ -33,6 +33,8 @@ def getExpiringAccessToken():
                     "username" : settings.PARTICLE_API_USERNAME,
                     "password" : settings.PARTICLE_API_PASSWORD,
                 })
+    print("Getting access token: ")
+    print(vars(response))
     json_data = json.loads(str(response.content.decode()))
 
     if 'access_token' in json_data:
@@ -44,7 +46,7 @@ def setDeviceFirmware(deviceId, firmwareVersion):
 
     token = getExpiringAccessToken()
 
-    return requests.put(API_PREFIX + API_VERSION + "products/" +
+    response = requests.put(API_PREFIX + API_VERSION + "products/" +
                     str(settings.PARTICLE_PRODUCT_ID) + "/devices/" + 
                     deviceId,
                     data={
@@ -52,4 +54,7 @@ def setDeviceFirmware(deviceId, firmwareVersion):
                             'desired_firmware_version' : firmwareVersion,
                             'flash' : 'true'
                 })
+    print("Setting device firmware: ")
+    print(vars(response))
+    return response;
 
