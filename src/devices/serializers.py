@@ -20,17 +20,13 @@ class DeviceSerializer(serializers.ModelSerializer):
 
         if deviceType != instance.deviceType:
             # The deviceType has changed! Flash the device with the new firmware...
-#            deviceType = DeviceType.objects.get(pk = deviceType_id)
             Particle.setDeviceFirmware(instance.deviceId,deviceType.firmwareVersion)
             # We just hope this works...
             print("deviceType changed!")
 
-        group = validated_data.get('group', instance.group)
         instance.deviceType = deviceType
+        instance.group = validated_data.get('group', instance.group)
         instance.deviceName = validated_data.get('deviceName', instance.deviceName)
-
-        if group is not None:
-            instance.group = group
 
         instance.save()
         return instance
@@ -92,8 +88,7 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
             device.group = group
             device.save()
 
-        state_data =  validated_data.pop('state')
-        group.state = DeviceGroupTypeState.objects.get(state_data)
+        group.state = validated_data.pop('state')
 
         return group 
 
