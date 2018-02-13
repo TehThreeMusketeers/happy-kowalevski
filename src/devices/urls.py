@@ -10,6 +10,7 @@ router.register(r'^/groups/types', DeviceGroupTypeViewSet)
 
 urlpatterns = [
     url(r'^/groups/?$', DeviceGroupView.as_view()),
+    url(r'^/groups/(?P<pk>[0-9]+)/?$',DeviceGroupView.as_view()),
 ]
 
 urlpatterns += router.urls

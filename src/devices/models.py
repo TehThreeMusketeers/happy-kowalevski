@@ -11,7 +11,9 @@ from accounts.models import User
   These will be created by admin
 '''
 class DeviceType(models.Model):
-    value = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True)
+    description = models.CharField(max_length=140,null=True, blank=True)
+    firmwareVersion = models.IntegerField(default=2)
 
 '''
   Represents list of functions available for a given 
@@ -20,7 +22,7 @@ class DeviceType(models.Model):
 '''
 class DeviceTypeFunc(models.Model):
     devicetype = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
-    funcName = models.CharField(max_length=50, unique=True)
+    funcName = models.CharField(max_length=50)
 
 '''
   A type of group. This will have the possible states a group can have
@@ -33,7 +35,15 @@ class DeviceGroupType(models.Model):
 '''
 class DeviceGroupTypeState(models.Model):
     devicegrouptype = models.ForeignKey(DeviceGroupType, related_name='states', on_delete=models.CASCADE)
-    state = models.CharField(max_length=50,unique=True)
+    state = models.CharField(max_length=50)
+
+'''
+  A variable in a group type
+'''
+class DeviceGroupTypeVariable(models.Model):
+    devicegrouptype = models.ForeignKey(DeviceGroupType, related_name='variables', on_delete=models.CASCADE)
+    variable = models.CharField(max_length=50)
+    variableType = models.CharField(max_length=50)
 
 '''
   A user will be able to create a group of their own devices
@@ -42,6 +52,7 @@ class DeviceGroupTypeState(models.Model):
 '''
 class DeviceGroup(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    state = models.ForeignKey(DeviceGroupTypeState) #Current state of group
     name = models.CharField(max_length=50)
     groupType = models.ForeignKey(DeviceGroupType) 
     description = models.CharField(max_length=140,null=True, blank=True)

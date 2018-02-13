@@ -2,9 +2,9 @@ from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.exceptions import ValidationError, PermissionDenied, MethodNotAllowed
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from lib.utils import AtomicMixin
 from .serializers import DeviceSerializer, DeviceTypeSerializer, DeviceGroupSerializer, DeviceGroupTypeSerializer
 from .models import Device, DeviceType, DeviceGroup, DeviceGroupType
@@ -42,7 +42,7 @@ class DeviceGroupTypeViewSet(ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
-class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMixin):
+class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMixin, RetrieveModelMixin):
     serializer_class = DeviceGroupSerializer
 
     authentication_classes = (TokenAuthentication,)
@@ -54,8 +54,10 @@ class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMi
 
         return DeviceGroup.objects.filter(user=user)
 
-    def post(self, request):
+    def post(self, request, pk=None):
         ''' Creates a device group from a list of devices '''
+        if pk is not None:
+            raise MethodNotAllowed('POST')
 
         if 'devices' not in request.data:
             raise ValidationError({'devices': ["Required: array of device Id's",]})
@@ -71,6 +73,8 @@ class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMi
 
         return self.create(request) 
 
-    def get(self, request):
+    def get(self, request, pk=None):
+        if pk:
+            return self.retrieve(request, pk)
         return self.list(request)
 
