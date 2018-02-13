@@ -45,6 +45,7 @@ class DeviceGroupTypeVariable(models.Model):
     variable = models.CharField(max_length=50)
     variableType = models.CharField(max_length=50)
 
+
 '''
   A user will be able to create a group of their own devices
   They should select what type of group it is. 
@@ -56,6 +57,33 @@ class DeviceGroup(models.Model):
     name = models.CharField(max_length=50)
     groupType = models.ForeignKey(DeviceGroupType) 
     description = models.CharField(max_length=140,null=True, blank=True)
+
+'''
+  Available comparison operators settable in a trigger,
+  e.g. <, >, >=, =, !=, etc.
+'''
+class DeviceGroupTriggerOperator(models.Model):
+    operator = models.CharField(max_length=2)
+
+''' 
+  A Trigger object belonging to a group
+  valuetype contains the type of value, e.g. light, sound etc.
+  valuetype also contains the data type of that value. E.g. light is an integer, moved is a boolean
+  operator is the comparison operator
+'''
+class DeviceGroupTrigger(models.Model):
+    valuetype = models.ForeignKey(DeviceGroupTypeVariable)
+    operator = models.ForeignKey(DeviceGroupTriggerOperator)
+    value = models.CharField(max_length=50)
+    group = models.ForeignKey(DeviceGroup)
+
+''' 
+  A LocalAction object, has a related trigger. 
+  A LocalAction triggers a method on a photon in the group
+'''
+class DeviceGroupTriggerLocalAction(models.Model):
+    trigger = models.ForeignKey(DeviceGroupTrigger, related_name='localActions')
+    funcName = models.CharField(max_length=50)
 
 ''' 
   A representation of the device. Owned by a user.

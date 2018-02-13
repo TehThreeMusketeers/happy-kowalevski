@@ -1,6 +1,5 @@
 from rest_framework import serializers
-
-from devices.models import Device, DeviceType, DeviceGroup, DeviceGroupType, DeviceGroupTypeState, DeviceGroupTypeVariable
+from devices.models import *
 import common.util.particle as Particle 
 
 class DeviceSerializer(serializers.ModelSerializer):
@@ -74,6 +73,7 @@ class DeviceGroupTypeSerializer(serializers.ModelSerializer):
             DeviceGroupTypeVariable.objects.create(devicegrouptype=groupType, **variable_data)
         return groupType 
 
+
 class DeviceGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceGroup
@@ -91,4 +91,23 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
         group.state = validated_data.pop('state')
 
         return group 
+
+class DeviceGroupTriggerLocalActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceGroupTriggerLocalAction
+        fields = ('id','funcName',)
+
+    def create(self, validated_data):
+        return DeviceGroupTriggerLocalAction.objects.create(**validated_data)
+
+class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
+    localActions = DeviceGroupTriggerLocalActionSerializer(many=True)
+
+    class Meta:
+        model = DeviceGroupTrigger
+        fields = ('id','valuetype','operator','value','group','actions',)
+
+    def create(self, validated_data):
+        return DeviceGroupTrigger.objects.create(**validated_data)
+
 
