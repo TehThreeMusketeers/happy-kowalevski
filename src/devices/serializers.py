@@ -130,6 +130,8 @@ class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super(DeviceGroupTriggerSerializer, self).to_representation(instance)
         data.update(group=instance.group.id)
+        data.update(operator=instance.operator.operator)
+        data.update(valuetype=instance.valuetype.variable)
         return data
 
 

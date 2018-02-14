@@ -84,7 +84,7 @@ class DeviceGroupTrigger(models.Model):
 '''
 class DeviceGroupTriggerLocalAction(models.Model):
     trigger = models.ForeignKey(DeviceGroupTrigger, related_name='localActions')
-    function = models.ForeignKey(DeviceTypeFunc)
+    function = models.CharField(max_length=50)
 
 ''' 
   A representation of the device. Owned by a user.

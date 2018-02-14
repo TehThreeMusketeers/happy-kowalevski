@@ -68,8 +68,8 @@ class DeviceGroupTriggerViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        groupId = self.kwargs['groupId']
-        triggers = DeviceGroupTrigger.objects.filter(group=groupId)
+        groupId = self.kwargs.get('groupId')
+        return DeviceGroupTrigger.objects.filter(group=groupId)
 
     def perform_create(self, serializer):
         try:
