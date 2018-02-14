@@ -6,8 +6,8 @@ from rest_framework.exceptions import ValidationError, PermissionDenied, MethodN
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from lib.utils import AtomicMixin
-from .serializers import DeviceSerializer, DeviceTypeSerializer, DeviceGroupSerializer, DeviceGroupTypeSerializer
-from .models import Device, DeviceType, DeviceGroup, DeviceGroupType
+from .serializers import *
+from .models import *
 
 
 class DeviceViewSet(ModelViewSet):
@@ -32,8 +32,24 @@ class DeviceTypeViewSet(ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+'''
+  This should be ADMIN only
+
+  For creating functions attached to a device type
+'''
+class DeviceTypeFunctionViewSet(ModelViewSet):
+    serializer_class = DeviceTypeFuncSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+#    def post(self, request):
+
+
 ''' 
   This should be ADMIN only 
+
+  For creating types of groups
 '''
 class DeviceGroupTypeViewSet(ModelViewSet):  
     serializer_class = DeviceGroupTypeSerializer
@@ -41,6 +57,63 @@ class DeviceGroupTypeViewSet(ModelViewSet):
 
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+'''
+  For creating trigger conditions attached to a group
+'''
+class DeviceGroupTriggerViewSet(ModelViewSet):
+    serializer_class = DeviceGroupTriggerSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        groupId = self.kwargs['groupId']
+        triggers = DeviceGroupTrigger.objects.filter(group=groupId)
+
+    def perform_create(self, serializer):
+        try:
+            group=DeviceGroup.objects.get(pk=self.kwargs.get('groupId'))
+        except:
+            raise ValidationError({'group': ["Invalid group ID",]})
+        serializer.save(group=group)
+
+'''
+  Gets list of available comparison operators
+'''
+class DeviceGroupTriggerOperatorView(GenericAPIView, ListModelMixin):
+    serializer_class = DeviceGroupTriggerOperatorSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return DeviceGroupTriggerOperator.objects.all()
+
+    def get(self, request):
+        return self.list(request)
+
+
+'''
+   For getting a list of functions a group has
+'''
+class DeviceGroupFunctionView(GenericAPIView, ListModelMixin):
+    serializer_class = DeviceTypeFuncSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+
+        groupId = self.kwargs['pk']
+        devices = Device.objects.filter(group=groupId)
+
+        return DeviceTypeFunc.objects.all()
+#        for device in devices: TODO
+#            functions.append(DeviceTypeFunc.objects.filter(
+#
+#        functions = DeviceTypeFunc.objects.filter(
+
 
 class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMixin, RetrieveModelMixin):
     serializer_class = DeviceGroupSerializer

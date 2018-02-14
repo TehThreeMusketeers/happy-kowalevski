@@ -19,9 +19,10 @@ class DeviceType(models.Model):
   Represents list of functions available for a given 
   device type
   These will be created by admin
+  TODO should be many-to-many
 '''
 class DeviceTypeFunc(models.Model):
-    devicetype = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
+    devicetype = models.ManyToManyField(DeviceType)
     funcName = models.CharField(max_length=50)
 
 '''
@@ -83,7 +84,7 @@ class DeviceGroupTrigger(models.Model):
 '''
 class DeviceGroupTriggerLocalAction(models.Model):
     trigger = models.ForeignKey(DeviceGroupTrigger, related_name='localActions')
-    funcName = models.CharField(max_length=50)
+    function = models.ForeignKey(DeviceTypeFunc)
 
 ''' 
   A representation of the device. Owned by a user.
@@ -94,7 +95,7 @@ class Device(models.Model):
     deviceId = models.CharField(max_length=50, unique=True)
     deviceName = models.CharField(max_length=50,null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
-    group = models.ForeignKey(DeviceGroup,null=True, blank=True)
+    group = models.ForeignKey(DeviceGroup, related_name='devices', null=True, blank=True)
 
 class TempReading(models.Model):
     device = models.ForeignKey(Device)

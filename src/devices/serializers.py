@@ -39,6 +39,13 @@ class DeviceTypeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return DeviceType.objects.create(**validated_data)
 
+class DeviceTypeFuncSerializer(serializers.ModelSerializer):
+    device = DeviceTypeSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = DeviceTypeFunc
+        fields = ('id','funcName',)
+
 class DeviceGroupTypeStateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceGroupTypeState
@@ -92,22 +99,37 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
 
         return group 
 
+class DeviceGroupTriggerOperatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceGroupTriggerOperator
+        fields = ('id','operator',)
+    
 class DeviceGroupTriggerLocalActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceGroupTriggerLocalAction
-        fields = ('id','funcName',)
+        fields = ('id','function',)
 
     def create(self, validated_data):
         return DeviceGroupTriggerLocalAction.objects.create(**validated_data)
 
 class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
     localActions = DeviceGroupTriggerLocalActionSerializer(many=True)
+    group = serializers.ReadOnlyField()
 
     class Meta:
         model = DeviceGroupTrigger
-        fields = ('id','valuetype','operator','value','group','actions',)
+        fields = ('id','valuetype','operator','group','value','localActions',)
 
     def create(self, validated_data):
-        return DeviceGroupTrigger.objects.create(**validated_data)
+        actions_data = validated_data.pop('localActions')
+        trigger = DeviceGroupTrigger.objects.create(**validated_data)
+        for action_data in actions_data:
+            DeviceGroupTriggerLocalAction.objects.create(trigger=trigger, **action_data)
+        return trigger 
+
+    def to_representation(self, instance):
+        data = super(DeviceGroupTriggerSerializer, self).to_representation(instance)
+        data.update(group=instance.group.id)
+        return data
 
 
