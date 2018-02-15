@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import ValidationError, PermissionDenied, MethodNotAllowed
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from lib.utils import AtomicMixin
 from .serializers import *
 from .models import *
@@ -114,8 +114,14 @@ class DeviceGroupFunctionView(GenericAPIView, ListModelMixin):
 #
 #        functions = DeviceTypeFunc.objects.filter(
 
+class DeviceEventViewSet(ModelViewSet):
+    serializer_class = DeviceEventSerializer
+    queryset = DeviceEvent.objects.all()
 
-class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMixin, RetrieveModelMixin):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
     serializer_class = DeviceGroupSerializer
 
     authentication_classes = (TokenAuthentication,)
@@ -150,4 +156,7 @@ class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMi
         if pk:
             return self.retrieve(request, pk)
         return self.list(request)
+
+    def patch(self, request, pk):
+        return self.partial_update(request,pk)
 

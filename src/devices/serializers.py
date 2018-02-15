@@ -29,6 +29,14 @@ class DeviceSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+class DeviceEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceEvent
+        fields = ('id','device','trigger',)
+
+    def create(self, validated_data):
+        return DeviceEvent.objects.create(**validated_data)
         
 
 class DeviceTypeSerializer(serializers.ModelSerializer):
@@ -98,6 +106,20 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
         group.state = validated_data.pop('state')
 
         return group 
+
+    def update(self, instance, validated_data):
+        state = validated_data.get('state', instance.state)
+
+        if state != instance.state:
+            # The state has changed! Tell all devices in the group about it 
+            # We just hope this works...
+            print("state changed!")
+
+        instance.state = state
+        instance.name = validated_data.get('name', instance.name)
+
+        instance.save()
+        return instance
 
 class DeviceGroupTriggerOperatorSerializer(serializers.ModelSerializer):
     class Meta:

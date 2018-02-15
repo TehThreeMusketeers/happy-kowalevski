@@ -78,6 +78,7 @@ class DeviceGroupTrigger(models.Model):
     value = models.CharField(max_length=50)
     group = models.ForeignKey(DeviceGroup)
 
+
 ''' 
   A LocalAction object, has a related trigger. 
   A LocalAction triggers a method on a photon in the group
@@ -96,6 +97,16 @@ class Device(models.Model):
     deviceName = models.CharField(max_length=50,null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     group = models.ForeignKey(DeviceGroup, related_name='devices', null=True, blank=True)
+
+'''
+  An event happened!
+  Contains the trigger
+  and the the device the event happened on
+'''
+class DeviceEvent(models.Model):
+    trigger = models.ForeignKey(DeviceGroupTrigger)
+    device = models.ForeignKey(Device)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class TempReading(models.Model):
     device = models.ForeignKey(Device)
