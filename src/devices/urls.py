@@ -4,9 +4,9 @@ from rest_framework.routers import SimpleRouter
 from devices.viewset import *
 
 router = SimpleRouter()
-router.register(r'^', DeviceViewSet)
-router.register(r'^/events', DeviceEventViewSet, 'events')
 router.register(r'^/types', DeviceTypeViewSet)
+router.register(r'^/events', DeviceEventViewSet, 'events')
+router.register(r'^', DeviceViewSet)
 router.register(r'^/groups/types', DeviceGroupTypeViewSet)
 router.register(r'^/groups/(?P<groupId>[0-9]+)/triggers',DeviceGroupTriggerViewSet, 'trigger')
 

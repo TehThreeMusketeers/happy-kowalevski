@@ -33,7 +33,8 @@ class DeviceSerializer(serializers.ModelSerializer):
 class DeviceEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceEvent
-        fields = ('id','device','trigger',)
+        fields = ('id','device','trigger','date',)
+        read_only_fields = ('date',)
 
     def create(self, validated_data):
         return DeviceEvent.objects.create(**validated_data)
