@@ -5,14 +5,15 @@ from knox.auth import TokenAuthentication
 from knox.models import AuthToken
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.models import User
-from accounts.serializers import UserRegistrationSerializer, UserSerializer
+from accounts.models import User, NotificationToken
+from accounts.serializers import UserRegistrationSerializer, UserSerializer, NotificationTokenSerializer
 from lib.utils import AtomicMixin
 
 import requests, json
@@ -44,6 +45,23 @@ class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
                     content_type=response.headers['Content-Type']
                 )
 
+class NotificationTokenViewSet(ModelViewSet):
+    serializer_class = NotificationTokenSerializer
+    queryset = NotificationToken.objects.all()
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+
+        return NotificationToken.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        try:
+            serializer.save()
+        except:
+            raise PermissionDenied('You cannot create more than one notifyToken. Use PATCH to update the current one')
 
 class UserLoginView(GenericAPIView):
     serializer_class = UserSerializer

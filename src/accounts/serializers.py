@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from accounts.models import User
+from accounts.models import User, NotificationToken
+from push_notifications.models import GCMDevice
 from lib.utils import validate_email as email_is_valid
 
 
@@ -43,3 +44,27 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Email already in use, please use a different email address.')
 
         return value
+
+class NotificationTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NotificationToken
+        fields = ('id','token')
+
+    def create(self, validated_data):
+        #Also create an associated gcm device
+        token = validated_data.get('token')
+        user = self.context['request'].user
+        GCMDevice.objects.create(registration_id=token, cloud_message_type="FCM", user=user)
+        return NotificationToken.objects.create(user=user,**validated_data)
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        instance.token = validated_data.get('token', instance.token)
+        device = GCMDevice.objects.filter(user=user)
+        if device is None:
+            raise serializers.ValidationError('Could not find existing FCM device. Please create one first')
+        device.registration_id = instance.token
+        instance.save()
+        device.save()
+        return instance
+

@@ -75,6 +75,7 @@ class DeviceGroupTriggerOperator(models.Model):
 class DeviceGroupTrigger(models.Model):
     valuetype = models.ForeignKey(DeviceGroupTypeVariable)
     operator = models.ForeignKey(DeviceGroupTriggerOperator)
+    state = models.ForeignKey(DeviceGroupTypeState) #Required group
     value = models.CharField(max_length=50)
     group = models.ForeignKey(DeviceGroup)
 
@@ -119,6 +120,11 @@ class HumReading(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class AmbLightReading(models.Model):
+    device = models.ForeignKey(Device)
+    value = models.FloatField()
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+
+class SoundReading(models.Model):
     device = models.ForeignKey(Device)
     value = models.FloatField()
     date = models.DateTimeField(auto_now_add=True, blank=True)

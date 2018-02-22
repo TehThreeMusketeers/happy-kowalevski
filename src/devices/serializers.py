@@ -141,7 +141,7 @@ class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DeviceGroupTrigger
-        fields = ('id','valuetype','operator','group','value','localActions',)
+        fields = ('id','valuetype','state','operator','group','value','localActions',)
 
     def create(self, validated_data):
         actions_data = validated_data.pop('localActions')
@@ -155,6 +155,15 @@ class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
         data.update(group=instance.group.id)
         data.update(operator=instance.operator.operator)
         data.update(valuetype=instance.valuetype.variable)
+        data.update(state=instance.state.state)
         return data
 
+'''
+TODO
+class TempSerializer(serializers.ModelSerializer):
+    device = serializers.ReadOnlyField()
+
+    class Meta: 
+        model = 
+'''
 

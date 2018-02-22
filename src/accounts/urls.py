@@ -1,8 +1,13 @@
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework.routers import SimpleRouter
+from accounts.views import NotificationTokenViewSet
 import accounts.views
 
+router = SimpleRouter()
+router.register(r'^/notifytoken', NotificationTokenViewSet)
+ 
 urlpatterns = [
     url(_(r'^/$'), #POST & GET users
         accounts.views.UserView.as_view(),
@@ -17,3 +22,5 @@ urlpatterns = [
         accounts.views.UserEmailConfirmationStatusView.as_view(),
         name='status'),
 ]
+
+urlpatterns += router.urls

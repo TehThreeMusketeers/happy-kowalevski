@@ -55,6 +55,33 @@ def setDeviceFirmware(deviceId, firmwareVersion):
                             'flash' : 'true'
                 })
     print("Setting device firmware: ")
-    print(vars(response))
-    return response;
+    return response
 
+def callDeviceFunction(deviceId, funcName):
+
+    token = getExpiringAccessToken()
+
+    return requests.post(API_PREFIX + API_VERSION + "products/" +
+                             str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
+                             "/" + deviceId + "/" + funcName,
+                              data={"access_token":token})
+
+
+def getDeviceVariable(deviceId, varName):
+
+    token = getExpiringAccessToken()
+
+    return requests.get(API_PREFIX + API_VERSION + "products/" +
+                             str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
+                             "/" + deviceId + "/" + varName,
+                              params={"access_token":token})
+
+
+def pingDevice(deviceId):
+
+    token = getExpiringAccessToken()
+
+    return requests.put(API_PREFIX + API_VERSION + "products/" +
+                             str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
+                             "/" + deviceId + "/ping",
+                              data={"access_token":token})

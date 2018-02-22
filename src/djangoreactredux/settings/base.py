@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'knox',
     'django_extensions',
+    'push_notifications',
 
     'accounts',
     'base',
@@ -78,6 +79,10 @@ USE_TZ = True
 AUTH_USER_MODEL = 'accounts.User'
 
 ACCOUNT_ACTIVATION_DAYS = 7  # days
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "FCM_API_KEY": "[your api key]",
+}
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')

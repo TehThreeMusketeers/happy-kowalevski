@@ -25,3 +25,6 @@ python-dateutil==2.6.1
 git+https://github.com/Seedstars/django-rest-logger.git
 
 django-rest-knox==3.0.3
+
+# Push notifications
+django-push-notifications==1.6.0
