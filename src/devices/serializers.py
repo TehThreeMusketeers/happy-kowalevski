@@ -158,12 +158,24 @@ class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
         data.update(state=instance.state.state)
         return data
 
-'''
-TODO
 class TempSerializer(serializers.ModelSerializer):
-    device = serializers.ReadOnlyField()
+    device = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta: 
-        model = 
-'''
+        model = TempReading
+        fields = ('id','device','value','date',)
+
+class SoundSerializer(serializers.ModelSerializer):
+    device = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta: 
+        model = SoundReading
+        fields = ('id','device','value','date',)
+
+class AmbLightSerializer(serializers.ModelSerializer):
+    device = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta: 
+        model = AmbLightReading
+        fields = ('id','device','value','date',)
 

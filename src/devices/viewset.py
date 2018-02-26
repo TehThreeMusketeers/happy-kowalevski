@@ -2,9 +2,10 @@ from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import ValidationError, PermissionDenied, MethodNotAllowed
+from rest_framework.exceptions import ValidationError, PermissionDenied, MethodNotAllowed, NotFound
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from datetime import datetime, timezone, timedelta
 from lib.utils import AtomicMixin
 from .serializers import *
 from .models import *
@@ -160,3 +161,44 @@ class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMi
     def patch(self, request, pk):
         return self.partial_update(request,pk)
 
+class DeviceTempView(AtomicMixin, GenericAPIView, ListModelMixin):
+    serializer_class = TempSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        device = Device.objects.filter(id=self.kwargs['pk'],user=self.request.user)
+        daysSince = datetime.timedelta(days=int(self.request.GET.get('since','1')))
+        return TempReading.objects.filter(device=device,date__gte=datetime.datetime.now()-daysSince)
+
+    def get(self, request, pk):
+        return self.list(request)
+
+class DeviceSoundView(AtomicMixin, GenericAPIView, ListModelMixin):
+    serializer_class = SoundSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        device = Device.objects.filter(id=self.kwargs['pk'],user=self.request.user)
+        daysSince = datetime.timedelta(days=int(self.request.GET.get('since','1')))
+        return SoundReading.objects.filter(device=device,date__gte=datetime.datetime.now()-daysSince)
+
+    def get(self, request, pk):
+        return self.list(request)
+
+class DeviceAmbLightView(AtomicMixin, GenericAPIView, ListModelMixin):
+    serializer_class = AmbLightSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        device = Device.objects.filter(id=self.kwargs['pk'],user=self.request.user)
+        daysSince = datetime.timedelta(days=int(self.request.GET.get('since','1')))
+        return AmbLightReading.objects.filter(device=device,date__gte=datetime.datetime.now()-daysSince)
+
+    def get(self, request, pk):
+        return self.list(request)

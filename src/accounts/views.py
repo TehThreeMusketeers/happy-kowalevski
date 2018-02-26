@@ -61,7 +61,7 @@ class NotificationTokenViewSet(ModelViewSet):
         try:
             serializer.save()
         except:
-            raise PermissionDenied('You cannot create more than one notifyToken. Use PATCH to update the current one')
+            raise PermissionDenied('You cannot create more than one notifyToken. Use PUT to update the current one')
 
 class UserLoginView(GenericAPIView):
     serializer_class = UserSerializer

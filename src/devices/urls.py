@@ -11,6 +11,9 @@ router.register(r'^/groups/types', DeviceGroupTypeViewSet)
 router.register(r'^/groups/(?P<groupId>[0-9]+)/triggers',DeviceGroupTriggerViewSet, 'trigger')
 
 urlpatterns = [
+    url(r'^/(?P<pk>[0-9]+)/temp/?$', DeviceTempView.as_view()),
+    url(r'^/(?P<pk>[0-9]+)/sound/?$', DeviceSoundView.as_view()),
+    url(r'^/(?P<pk>[0-9]+)/light/?$', DeviceAmbLightView.as_view()),
     url(r'^/groups/?$', DeviceGroupView.as_view()),
     url(r'^/groups/(?P<pk>[0-9]+)/?$',DeviceGroupView.as_view()),
     url(r'^/groups/(?P<pk>[0-9]+)/functions/',DeviceGroupFunctionView.as_view()),

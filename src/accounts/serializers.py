@@ -60,7 +60,7 @@ class NotificationTokenSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context['request'].user
         instance.token = validated_data.get('token', instance.token)
-        device = GCMDevice.objects.filter(user=user)
+        device = GCMDevice.objects.filter(user=user).first()
         if device is None:
             raise serializers.ValidationError('Could not find existing FCM device. Please create one first')
         device.registration_id = instance.token

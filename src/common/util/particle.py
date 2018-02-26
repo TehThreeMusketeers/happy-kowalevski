@@ -77,6 +77,15 @@ def getDeviceVariable(deviceId, varName):
                               params={"access_token":token})
 
 
+def getDeviceInfo(deviceId):
+
+    token = getExpiringAccessToken()
+
+    return requests.get(API_PREFIX + API_VERSION + "products/" +
+                             str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
+                             "/" + deviceId,
+                              params={"access_token":token})
+
 def pingDevice(deviceId):
 
     token = getExpiringAccessToken()
