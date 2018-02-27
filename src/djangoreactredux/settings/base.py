@@ -81,7 +81,7 @@ AUTH_USER_MODEL = 'accounts.User'
 ACCOUNT_ACTIVATION_DAYS = 7  # days
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-        "FCM_API_KEY": "[your api key]",
+        "FCM_API_KEY": os.environ['FCM_API_KEY'],
 }
 
 STATIC_URL = '/static/'

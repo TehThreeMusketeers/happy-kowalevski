@@ -1,16 +1,19 @@
 from rest_framework import serializers
 from devices.models import *
-import common.util.particle as Particle 
+from accounts.models import NotificationToken
+from push_notifications.models import APNSDevice, GCMDevice
+import common.util.particle as Particle
 
 class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Device 
+        model = Device
         fields = ('id','deviceId','deviceType','deviceName','group',)
 
     def create(self, validated_data):
         deviceType = DeviceType.objects.get(pk = validated_data.get('deviceType'))
         Particle.setDeviceFirmware(validated_data.get('deviceId'),deviceType.firmwareVersion)
         # We just hope this works...
+        # TODO Add call to configure photon
 
         return Device.objects.create(user=self.context['request'].user,**validated_data)
 
@@ -22,6 +25,8 @@ class DeviceSerializer(serializers.ModelSerializer):
             Particle.setDeviceFirmware(instance.deviceId,deviceType.firmwareVersion)
             # We just hope this works...
             print("deviceType changed!")
+            
+        # TODO Add call to configure photon
 
         instance.deviceType = deviceType
         instance.group = validated_data.get('group', instance.group)
@@ -37,7 +42,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         if 'ok' in response:
             print("Oh no, device not found")
         elif {'variables', 'functions'} <= set(response):
-            if 'variables' in response: 
+            if 'variables' in response:
                 data['variables'] = response['variables']
             if 'functions' in response:
                 data['variables'] = response['variables']
@@ -50,8 +55,27 @@ class DeviceEventSerializer(serializers.ModelSerializer):
         read_only_fields = ('date',)
 
     def create(self, validated_data):
+        # get trigger and dispatch any actions in the group
+        # dispatch any actions in the event
+        trigger = validated_data['trigger']
+        actions = DeviceGroupTriggerLocalAction.objects.filter(trigger=trigger.id)
+        devices = Device.objects.filter(group=trigger.group_id)
+        for action in actions:
+            for device in devices:
+                Particle.callDeviceFunction(device.deviceId, action.function)
+
+        # Send notification 
+        token = NotificationToken.objects.filter(user=self.context['request'].user).first()
+        if token is not None:
+            regToken = token.token
+            gcmdevice = GCMDevice.objects.get(registration_id=regToken)
+            # The first argument will be sent as "message" to the intent extras Bundle
+            # Retrieve it with intent.getExtras().getString("message")
+            device = validated_data['device']
+            gcmdevice.send_message("An event occurred on " + device.deviceName + " with ID " + str(device.id))
+
         return DeviceEvent.objects.create(**validated_data)
-        
+
 
 class DeviceTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -100,7 +124,7 @@ class DeviceGroupTypeSerializer(serializers.ModelSerializer):
             DeviceGroupTypeState.objects.create(devicegrouptype=groupType, **state_data)
         for variable_data in variables_data:
             DeviceGroupTypeVariable.objects.create(devicegrouptype=groupType, **variable_data)
-        return groupType 
+        return groupType
 
 
 class DeviceGroupSerializer(serializers.ModelSerializer):
@@ -119,13 +143,13 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
 
         group.state = validated_data.pop('state')
 
-        return group 
+        return group
 
     def update(self, instance, validated_data):
         state = validated_data.get('state', instance.state)
 
         if state != instance.state:
-            # The state has changed! Tell all devices in the group about it 
+            # The state has changed! Tell all devices in the group about it
             # We just hope this works...
             print("state changed!")
 
@@ -139,7 +163,7 @@ class DeviceGroupTriggerOperatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceGroupTriggerOperator
         fields = ('id','operator',)
-    
+
 class DeviceGroupTriggerLocalActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceGroupTriggerLocalAction
@@ -161,7 +185,7 @@ class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
         trigger = DeviceGroupTrigger.objects.create(**validated_data)
         for action_data in actions_data:
             DeviceGroupTriggerLocalAction.objects.create(trigger=trigger, **action_data)
-        return trigger 
+        return trigger
 
     def to_representation(self, instance):
         data = super(DeviceGroupTriggerSerializer, self).to_representation(instance)
@@ -172,17 +196,17 @@ class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
         return data
 
 class TempSerializer(serializers.ModelSerializer):
-    class Meta: 
+    class Meta:
         model = TempReading
         fields = ('id','device','result','date',)
 
 class SoundSerializer(serializers.ModelSerializer):
-    class Meta: 
+    class Meta:
         model = SoundReading
         fields = ('id','device','result','date',)
 
 class AmbLightSerializer(serializers.ModelSerializer):
-    class Meta: 
+    class Meta:
         model = AmbLightReading
         fields = ('id','device','result','date',)
 

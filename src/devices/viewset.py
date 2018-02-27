@@ -20,7 +20,6 @@ class DeviceViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        print(vars(Device.objects.all().first()))
         return Device.objects.filter(user=user)
 
 ''' 
@@ -65,8 +64,9 @@ class DeviceGroupTypeViewSet(ModelViewSet):
 class DeviceGroupTriggerViewSet(ModelViewSet):
     serializer_class = DeviceGroupTriggerSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+#    authentication_classes = (TokenAuthentication,) //fix later
+#    permission_classes = (IsAuthenticated,) //fix later
+#    TODO only get should be allowed without authentication
 
     def get_queryset(self):
         groupId = self.kwargs.get('groupId')

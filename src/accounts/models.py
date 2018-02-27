@@ -155,5 +155,5 @@ class User(AbstractBaseUser):
 
 class NotificationToken(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=140)
+    token = models.CharField(max_length=220)
 
