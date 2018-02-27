@@ -65,7 +65,7 @@ class DeviceEventSerializer(serializers.ModelSerializer):
                 Particle.callDeviceFunction(device.deviceId, action.function)
 
         # Send notification 
-        token = NotificationToken.objects.filter(user=self.context['request'].user).first()
+        token = NotificationToken.objects.filter(user=device.user).first()
         if token is not None:
             regToken = token.token
             gcmdevice = GCMDevice.objects.get(registration_id=regToken)
