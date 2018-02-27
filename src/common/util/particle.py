@@ -33,8 +33,6 @@ def getExpiringAccessToken():
                     "username" : settings.PARTICLE_API_USERNAME,
                     "password" : settings.PARTICLE_API_PASSWORD,
                 })
-    print("Getting access token: ")
-    print(vars(response))
     json_data = json.loads(str(response.content.decode()))
 
     if 'access_token' in json_data:
@@ -61,36 +59,36 @@ def callDeviceFunction(deviceId, funcName):
 
     token = getExpiringAccessToken()
 
-    return requests.post(API_PREFIX + API_VERSION + "products/" +
+    return json.loads(str(requests.post(API_PREFIX + API_VERSION + "products/" +
                              str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
                              "/" + deviceId + "/" + funcName,
-                              data={"access_token":token})
+                              data={"access_token":token}).content.decode()))
 
 
 def getDeviceVariable(deviceId, varName):
 
     token = getExpiringAccessToken()
 
-    return requests.get(API_PREFIX + API_VERSION + "products/" +
+    return json.loads(str(requests.get(API_PREFIX + API_VERSION + "products/" +
                              str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
                              "/" + deviceId + "/" + varName,
-                              params={"access_token":token})
+                              params={"access_token":token}).content.decode()))
 
 
 def getDeviceInfo(deviceId):
 
     token = getExpiringAccessToken()
 
-    return requests.get(API_PREFIX + API_VERSION + "products/" +
+    return json.loads(str(requests.get(API_PREFIX + API_VERSION + "products/" +
                              str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
                              "/" + deviceId,
-                              params={"access_token":token})
+                              params={"access_token":token}).content.decode()))
 
 def pingDevice(deviceId):
 
     token = getExpiringAccessToken()
 
-    return requests.put(API_PREFIX + API_VERSION + "products/" +
+    return json.loads(str(requests.put(API_PREFIX + API_VERSION + "products/" +
                              str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
                              "/" + deviceId + "/ping",
-                              data={"access_token":token})
+                              data={"access_token":token}).content.decode()))

@@ -111,22 +111,22 @@ class DeviceEvent(models.Model):
 
 class TempReading(models.Model):
     device = models.ForeignKey(Device)
-    value = models.FloatField()
+    result = models.FloatField()
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class HumReading(models.Model):
     device = models.ForeignKey(Device)
-    value = models.FloatField()
+    result = models.FloatField()
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class AmbLightReading(models.Model):
     device = models.ForeignKey(Device)
-    value = models.FloatField()
+    result = models.FloatField()
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class SoundReading(models.Model):
     device = models.ForeignKey(Device)
-    value = models.FloatField()
+    result = models.FloatField()
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
 class MovementReading(models.Model):

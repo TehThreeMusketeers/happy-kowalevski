@@ -20,7 +20,7 @@ class DeviceViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-
+        print(vars(Device.objects.all().first()))
         return Device.objects.filter(user=user)
 
 ''' 
