@@ -30,6 +30,19 @@ class DeviceSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def to_representation(self, instance):
+        data = super(DeviceSerializer, self).to_representation(instance)
+        data.update(group=instance.group.id)
+        response = Particle.getDeviceInfo(data['deviceId'])
+        if 'ok' in response:
+            print("Oh no, device not found")
+        elif {'variables', 'functions'} <= set(response):
+            if 'variables' in response: 
+                data['variables'] = response['variables']
+            if 'functions' in response:
+                data['variables'] = response['variables']
+        return data
+
 class DeviceEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceEvent
