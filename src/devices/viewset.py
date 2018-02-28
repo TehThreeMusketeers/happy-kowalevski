@@ -1,4 +1,5 @@
 from knox.auth import TokenAuthentication
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -119,9 +120,8 @@ class DeviceEventViewSet(ModelViewSet):
     serializer_class = DeviceEventSerializer
     queryset = DeviceEvent.objects.all()
 
-#    authentication_classes = (TokenAuthentication,)
-#    permission_classes = (IsAuthenticated,)
-#   TODO ..... bad bad bad fix auth
+    authentication_classes = (TokenAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
     serializer_class = DeviceGroupSerializer
