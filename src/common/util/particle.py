@@ -38,6 +38,8 @@ def getExpiringAccessToken():
     if 'access_token' in json_data:
         return json_data['access_token']
 
+    print(response)
+
     return "" #Lazy, sorry, no time
 
 def setDeviceFirmware(deviceId, firmwareVersion):
