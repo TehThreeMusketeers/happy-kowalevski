@@ -123,6 +123,11 @@ class DeviceEventViewSet(ModelViewSet):
     authentication_classes = (TokenAuthentication, BasicAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+    def perform_create(self, serializer):
+        if self.request.user.email != "particle@cloud.net":
+            raise PermissionDenied({'No': ["NOPE"]})
+        serializer.save()
+
 class DeviceGroupView(AtomicMixin, GenericAPIView, CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
     serializer_class = DeviceGroupSerializer
 
