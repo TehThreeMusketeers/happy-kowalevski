@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.9.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: backend
+  name: backend
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: backend
+    spec:
+      containers:
+      - command:
+        - /django-entrypoint.sh
+        env:
+        - name: FCM_API_KEY
+          value: AAAAgCXY2LU:APA91bH05fwaIdR-GdwJc64cXp1dDMlVBidueCsYugHbWAm4cGNJ1GOJCaaOrASmaM1M1BCBO7JLiZTNV8FaLLx3-Eg-etYsZUBYUjAQogW1_itJFkAcY0geB1bCSvk0YHJKMU3JMjtw
+        - name: PARTICLE_API_CLIENT
+          value: set-mobile-app-765
+        - name: PARTICLE_API_KEY
+          value: 230cce51dc8c1a8cafe92498581ac11dfeb7448d
+        - name: PARTICLE_API_PASSWORD
+          value: $Udoparticle3939
+        - name: PARTICLE_API_USERNAME
+          value: g.anderson@lancaster.ac.uk
+        - name: PARTICLE_PRODUCT_ID
+          value: "6812"
+        image: backend
+        name: backend
+        resources: {}
+        volumeMounts:
+        - mountPath: /django
+          name: backend-claim0
+      restartPolicy: Always
+      volumes:
+      - name: backend-claim0
+        persistentVolumeClaim:
+          claimName: backend-claim0
+status: {}

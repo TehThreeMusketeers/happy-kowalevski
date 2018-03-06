@@ -30,7 +30,8 @@ class UserView(AtomicMixin, CreateModelMixin, GenericAPIView):
         if 'email' not in request.data:
             raise ValidationError({'email': ["Required",]})
 
-        if request.data['email'] == "particle@cloud.net":
+        if request.data['email'] == "particle@cloud.net" or \
+           "test.com" in request.data['email'] :
             request.data['access_token'] = "123"
             request.data['refresh_token'] = "123"
             return self.create(request)

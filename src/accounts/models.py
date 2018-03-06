@@ -65,7 +65,7 @@ class MyUserManager(BaseUserManager):
         :param extra_fields:
         :return: User
         """
-        return self._create_user(email, password, first_name, last_name, is_staff=True, is_superuser=True,
+        return self._create_user(email, password, first_name, last_name, access_token, refresh_token, is_staff=True, is_superuser=True,
                                  **extra_fields)
 
 

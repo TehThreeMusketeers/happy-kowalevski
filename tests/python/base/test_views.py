@@ -18,7 +18,7 @@ class BaseTests(APITestCase):
 
     def test_get_protected_page(self):
         # Ensure we can login with given credentials.
-        url = reverse('accounts:login')
+        url = reverse('accounts:createSession')
         self.client.credentials(HTTP_AUTHORIZATION=get_basic_auth_header('emailwilllogin@mydomain.com', 'test'))
         response = self.client.post(url, format='json')
         self.assertTrue('token' in response.data)

@@ -7,8 +7,9 @@ router = SimpleRouter()
 router.register(r'^/types', DeviceTypeViewSet)
 router.register(r'^/events', DeviceEventViewSet, 'events')
 router.register(r'^', DeviceViewSet)
+router.register(r'^/(?P<deviceId>[0-9]+)/triggers', DeviceTriggerViewSet, 'devicetrigger')
 router.register(r'^/groups/types', DeviceGroupTypeViewSet)
-router.register(r'^/groups/(?P<groupId>[0-9]+)/triggers',DeviceGroupTriggerViewSet, 'trigger')
+router.register(r'^/groups/(?P<groupId>[0-9]+)/triggers',DeviceGroupTriggerViewSet, 'grouptrigger')
 
 urlpatterns = [
     url(r'^/(?P<pk>[0-9]+)/temp/?$', DeviceTempView.as_view()),

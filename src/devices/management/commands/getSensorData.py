@@ -15,6 +15,7 @@ class Command(BaseCommand):
                 print("Oh no, device not found")
                 continue
             if 'variables' in response:
+                print(response)
                 for variable in response['variables']:
                     print(variable)
                     varResp = Particle.getDeviceVariable(device.deviceId,variable)

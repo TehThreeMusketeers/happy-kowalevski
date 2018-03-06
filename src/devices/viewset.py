@@ -63,7 +63,7 @@ class DeviceGroupTypeViewSet(ModelViewSet):
   For creating trigger conditions attached to a group
 '''
 class DeviceGroupTriggerViewSet(ModelViewSet):
-    serializer_class = DeviceGroupTriggerSerializer
+    serializer_class = TriggerSerializer
 
 #    authentication_classes = (TokenAuthentication,) //fix later
 #    permission_classes = (IsAuthenticated,) //fix later
@@ -71,7 +71,7 @@ class DeviceGroupTriggerViewSet(ModelViewSet):
 
     def get_queryset(self):
         groupId = self.kwargs.get('groupId')
-        return DeviceGroupTrigger.objects.filter(group=groupId)
+        return Trigger.objects.filter(group=groupId)
 
     def perform_create(self, serializer):
         try:
@@ -81,16 +81,37 @@ class DeviceGroupTriggerViewSet(ModelViewSet):
         serializer.save(group=group)
 
 '''
+  For creating trigger conditions attached to a group
+'''
+class DeviceTriggerViewSet(ModelViewSet):
+    serializer_class = TriggerSerializer
+
+#    authentication_classes = (TokenAuthentication,) //fix later
+#    permission_classes = (IsAuthenticated,) //fix later
+#    TODO only get should be allowed without authentication
+
+    def get_queryset(self):
+        deviceId = self.kwargs.get('deviceId')
+        return Trigger.objects.filter(device=deviceId)
+
+    def perform_create(self, serializer):
+        try:
+            device=Device.objects.get(pk=self.kwargs.get('deviceId'))
+        except:
+            raise ValidationError({'device': ["Invalid device ID",]})
+        serializer.save(device=device)
+
+'''
   Gets list of available comparison operators
 '''
 class DeviceGroupTriggerOperatorView(GenericAPIView, ListModelMixin):
-    serializer_class = DeviceGroupTriggerOperatorSerializer
+    serializer_class = TriggerOperatorSerializer
 
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return DeviceGroupTriggerOperator.objects.all()
+        return TriggerOperator.objects.all()
 
     def get(self, request):
         return self.list(request)

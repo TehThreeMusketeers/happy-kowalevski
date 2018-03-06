@@ -3,7 +3,6 @@ from django.test import TestCase
 
 from accounts.models import User
 
-
 class UserFactory(factory.DjangoModelFactory):
     first_name = 'John'
     last_name = 'Doe'
@@ -22,14 +21,18 @@ class AccountsModelsTests(TestCase):
         self.assertEqual(str(self.user), 'test@test.com')
 
     def test_super_user(self):
-        super_user = User.objects.create_superuser(email='email@test.com')
+        super_user = User.objects.create_superuser(email='email@test.com',
+                                                  access_token='123',
+                                                  refresh_token='123')
         self.assertEqual(super_user.is_superuser, True)
 
     def test_user(self):
         user = User.objects.create_user(email='email@test.com',
                                         first_name='user',
                                         last_name='test',
-                                        password='test')
+                                        password='test',
+                                        access_token='123',
+                                        refresh_token='123')
         self.assertEqual(user.is_superuser, False)
 
     def test_get_full_name(self):
@@ -37,3 +40,4 @@ class AccountsModelsTests(TestCase):
 
     def test_get_short_name(self):
         self.assertEqual(self.user.get_short_name(), 'John')
+

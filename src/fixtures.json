@@ -19,37 +19,37 @@
   "pk": "7c32d60d-6312-42f6-a73a-22da56b07374"
 },
 {
-    "model" : "devices.DeviceGroupTriggerOperator",
+    "model" : "devices.TriggerOperator",
     "fields" : {
         "operator" : "<"
     }
 },
 {
-    "model" : "devices.DeviceGroupTriggerOperator",
+    "model" : "devices.TriggerOperator",
     "fields" : {
         "operator" : ">"
     }
 },
 {
-    "model" : "devices.DeviceGroupTriggerOperator",
+    "model" : "devices.TriggerOperator",
     "fields" : {
         "operator" : "<="
     }
 },
 {
-    "model" : "devices.DeviceGroupTriggerOperator",
+    "model" : "devices.TriggerOperator",
     "fields" : {
         "operator" : ">="
     }
 },
 {
-    "model" : "devices.DeviceGroupTriggerOperator",
+    "model" : "devices.TriggerOperator",
     "fields" : {
         "operator" : "="
     }
 },
 {
-    "model" : "devices.DeviceGroupTriggerOperator",
+    "model" : "devices.TriggerOperator",
     "fields" : {
         "operator" : "!="
     }

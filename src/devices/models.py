@@ -24,6 +24,8 @@ class DeviceType(models.Model):
 class DeviceTypeFunc(models.Model):
     devicetype = models.ManyToManyField(DeviceType)
     funcName = models.CharField(max_length=50)
+    param = models.CharField(max_length=50, blank=True, null=True)
+
 
 '''
   A type of group. This will have the possible states a group can have
@@ -59,35 +61,6 @@ class DeviceGroup(models.Model):
     groupType = models.ForeignKey(DeviceGroupType) 
     description = models.CharField(max_length=140,null=True, blank=True)
 
-'''
-  Available comparison operators settable in a trigger,
-  e.g. <, >, >=, =, !=, etc.
-'''
-class DeviceGroupTriggerOperator(models.Model):
-    operator = models.CharField(max_length=2)
-
-''' 
-  A Trigger object belonging to a group
-  valuetype contains the type of value, e.g. light, sound etc.
-  valuetype also contains the data type of that value. E.g. light is an integer, moved is a boolean
-  operator is the comparison operator
-'''
-class DeviceGroupTrigger(models.Model):
-    valuetype = models.ForeignKey(DeviceGroupTypeVariable)
-    operator = models.ForeignKey(DeviceGroupTriggerOperator)
-    state = models.ForeignKey(DeviceGroupTypeState) #Required group
-    value = models.CharField(max_length=50)
-    group = models.ForeignKey(DeviceGroup)
-
-
-''' 
-  A LocalAction object, has a related trigger. 
-  A LocalAction triggers a method on a photon in the group
-'''
-class DeviceGroupTriggerLocalAction(models.Model):
-    trigger = models.ForeignKey(DeviceGroupTrigger, related_name='localActions')
-    function = models.CharField(max_length=50)
-
 ''' 
   A representation of the device. Owned by a user.
 '''
@@ -100,12 +73,44 @@ class Device(models.Model):
     group = models.ForeignKey(DeviceGroup, related_name='devices', null=True, blank=True)
 
 '''
+  Available comparison operators settable in a trigger,
+  e.g. <, >, >=, =, !=, etc.
+'''
+class TriggerOperator(models.Model):
+    operator = models.CharField(max_length=2)
+
+''' 
+  A Trigger object belonging to a group of devices, or an individual device
+  valuetype contains the type of value, e.g. light, sound etc.
+  valuetype also contains the data type of that value. E.g. light is an integer, moved is a boolean
+  operator is the comparison operator
+'''
+class Trigger(models.Model):
+    valuetype = models.ForeignKey(DeviceGroupTypeVariable)
+    operator = models.ForeignKey(TriggerOperator)
+    state = models.ForeignKey(DeviceGroupTypeState) #Required group
+    value = models.CharField(max_length=50)
+    group = models.ForeignKey(DeviceGroup, blank=True, null=True)
+    device = models.ForeignKey(Device, blank=True, null=True)
+
+
+''' 
+  A LocalAction object, has a related trigger. 
+  A LocalAction triggers a method on a photon in the group
+'''
+class TriggerLocalAction(models.Model):
+    trigger = models.ForeignKey(Trigger, related_name='localActions')
+    function = models.CharField(max_length=50)
+    param = models.CharField(max_length=50, blank=True, null=True)
+
+
+'''
   An event happened!
   Contains the trigger
   and the the device the event happened on
 '''
 class DeviceEvent(models.Model):
-    trigger = models.ForeignKey(DeviceGroupTrigger)
+    trigger = models.ForeignKey(Trigger)
     device = models.ForeignKey(Device)
     date = models.DateTimeField(auto_now_add=True, blank=True)
 

@@ -8,7 +8,7 @@ from tests.python.accounts.test_models import UserFactory
 
 class UserRegistrationSerializerTest(CustomTestCase, APITestCase):
     INVALID_DATA_DICT = [
-        {'data': {'email': 'test1@mailinator.com',
+        {'data': {'email': 'test1@test.com',
                   'first_name': 'test',
                   'last_name': 'user',
                   'password': 'test'},
@@ -29,22 +29,25 @@ class UserRegistrationSerializerTest(CustomTestCase, APITestCase):
          },
     ]
     VALID_DATA_DICT = [
-        {'email': 'emailsuccess@gmail.com',
+        {'email': 'emailsuccess@test.com',
          'first_name': 'test',
          'last_name': 'user',
-         'password': 'test'},
+         'password': 'test',
+         'access_token' : '123',
+         'refresh_token' : '123'},
     ]
 
     def setUp(self):
         self.required_fields = ['email', 'first_name', 'last_name', 'password']
         self.not_required_fields = ['id']
-        self.user = UserFactory.create(email='emailwilllogininserializer@mydomain.com')
+        self.user = UserFactory.create(email='emailwilllogininserializer@test.com')
 
     def test_fields(self):
         serializer = UserRegistrationSerializer()
         self.assert_fields_required(True, serializer, self.required_fields)
         self.assert_fields_required(False, serializer, self.not_required_fields)
-        self.assertEqual(len(serializer.fields), len(self.required_fields) + len(self.not_required_fields))
+        # 2 added here because these fields are grabbed from the particle cloud
+        self.assertEqual(len(serializer.fields), len(self.required_fields) + len(self.not_required_fields) + 2)
 
     def test_invalid_data(self):
         serializer = UserRegistrationSerializer
@@ -57,7 +60,7 @@ class UserRegistrationSerializerTest(CustomTestCase, APITestCase):
 
 class UserSerializerTest(CustomTestCase, APITestCase):
     INVALID_DATA_DICT = [
-        {'data': {'email': 'emailwilllogin@mydomain.com',
+        {'data': {'email': 'emailwilllogin@test.com',
                   'first_name': 'test', 'last_name': ''},
          'error': ('last_name', ['This field may not be blank.']),
          'label': 'Last name is required',
@@ -66,7 +69,7 @@ class UserSerializerTest(CustomTestCase, APITestCase):
          },
     ]
     VALID_DATA_DICT = [
-        {'email': 'emailwilllogin@mydomain.com', 'first_name': 'test', 'last_name': 'test'},
+        {'email': 'emailwilllogin@test.com', 'first_name': 'test', 'last_name': 'test'},
     ]
 
     def setUp(self):

@@ -58,7 +58,7 @@ class DeviceEventSerializer(serializers.ModelSerializer):
         # get trigger and dispatch any actions in the group
         # dispatch any actions in the event
         trigger = validated_data['trigger']
-        actions = DeviceGroupTriggerLocalAction.objects.filter(trigger=trigger.id)
+        actions = LocalAction.objects.filter(trigger=trigger.id)
         devices = Device.objects.filter(group=trigger.group_id)
         for action in actions:
             for device in devices:
@@ -90,7 +90,7 @@ class DeviceTypeFuncSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DeviceTypeFunc
-        fields = ('id','funcName',)
+        fields = ('id','funcName','param',)
 
 class DeviceGroupTypeStateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -159,37 +159,41 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class DeviceGroupTriggerOperatorSerializer(serializers.ModelSerializer):
+class TriggerOperatorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DeviceGroupTriggerOperator
+        model = TriggerOperator
         fields = ('id','operator',)
 
-class DeviceGroupTriggerLocalActionSerializer(serializers.ModelSerializer):
+class TriggerLocalActionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DeviceGroupTriggerLocalAction
-        fields = ('id','function',)
+        model = TriggerLocalAction
+        fields = ('id','function','param',)
 
     def create(self, validated_data):
-        return DeviceGroupTriggerLocalAction.objects.create(**validated_data)
+        return TriggerLocalAction.objects.create(**validated_data)
 
-class DeviceGroupTriggerSerializer(serializers.ModelSerializer):
-    localActions = DeviceGroupTriggerLocalActionSerializer(many=True)
+class TriggerSerializer(serializers.ModelSerializer):
+    localActions = TriggerLocalActionSerializer(many=True)
     group = serializers.ReadOnlyField()
+    device = serializers.ReadOnlyField()
 
     class Meta:
-        model = DeviceGroupTrigger
-        fields = ('id','valuetype','state','operator','group','value','localActions',)
+        model = Trigger
+        fields = ('id','valuetype','state','operator','device','group','value','localActions',)
 
     def create(self, validated_data):
         actions_data = validated_data.pop('localActions')
-        trigger = DeviceGroupTrigger.objects.create(**validated_data)
+        trigger = Trigger.objects.create(**validated_data)
         for action_data in actions_data:
-            DeviceGroupTriggerLocalAction.objects.create(trigger=trigger, **action_data)
+            TriggerLocalAction.objects.create(trigger=trigger, **action_data)
         return trigger
 
     def to_representation(self, instance):
-        data = super(DeviceGroupTriggerSerializer, self).to_representation(instance)
-        data.update(group=instance.group.id)
+        data = super(TriggerSerializer, self).to_representation(instance)
+        if instance.group is not None:
+            data.update(group=instance.group.id)
+        elif instance.device is not None:
+            data.update(device=instance.device.id)
         data.update(operator=instance.operator.operator)
         data.update(valuetype=instance.valuetype.variable)
         data.update(state=instance.state.state)
