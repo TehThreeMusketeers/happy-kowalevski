@@ -32,6 +32,7 @@ INSTALLED_APPS = (
     'accounts',
     'base',
     'devices',
+    'zones',
 )
 
 MIDDLEWARE_CLASSES = (
