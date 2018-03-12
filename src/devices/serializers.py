@@ -58,7 +58,7 @@ class DeviceEventSerializer(serializers.ModelSerializer):
         # get trigger and dispatch any actions in the group
         # dispatch any actions in the event
         trigger = validated_data['trigger']
-        actions = LocalAction.objects.filter(trigger=trigger.id)
+        actions = TriggerLocalAction.objects.filter(trigger=trigger.id)
         devices = Device.objects.filter(group=trigger.group_id)
         for action in actions:
             for device in devices:
