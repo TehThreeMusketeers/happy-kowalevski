@@ -179,7 +179,7 @@ class TriggerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trigger
-        fields = ('id','valuetype','state','operator','device','group','value',)
+        fields = ('id','valuetype','state','operator','device','group','value','localActions',)
 
     def create(self, validated_data):
         actions_data = validated_data.pop('localActions')
@@ -194,6 +194,7 @@ class TriggerSerializer(serializers.ModelSerializer):
             data.update(group=instance.group.id)
         elif instance.device is not None:
             data.update(device=instance.device.id)
+        data.pop('localActions',None)
         data.update(operator=instance.operator.operator)
         data.update(valuetype=instance.valuetype.variable)
         data.update(state=instance.state.state)
