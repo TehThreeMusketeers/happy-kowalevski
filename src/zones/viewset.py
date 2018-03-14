@@ -40,7 +40,6 @@ class UserLocationView(AtomicMixin, GenericAPIView, CreateModelMixin, RetrieveMo
         return Zone.objects.filter(user=user)
 
     def get(self, request, pk=None):
-        #bit naughty, don't care
         userloc = UserLocation.objects.filter(user=self.request.user).first()
         resp = UserLocationSerializer(userloc).data
         resp.pop('id',None)

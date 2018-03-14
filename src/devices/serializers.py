@@ -29,6 +29,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         # TODO Add call to configure photon
 
         instance.deviceType = deviceType
+        instance.zone = validated_data.get('zone',instance.zone)
         instance.group = validated_data.get('group', instance.group)
         instance.deviceName = validated_data.get('deviceName', instance.deviceName)
 
@@ -41,11 +42,12 @@ class DeviceSerializer(serializers.ModelSerializer):
         response = Particle.getDeviceInfo(data['deviceId'])
         if 'ok' in response:
             print("Oh no, device not found")
+            print(response)
         elif {'variables', 'functions'} <= set(response):
             if 'variables' in response:
                 data['variables'] = response['variables']
             if 'functions' in response:
-                data['variables'] = response['variables']
+                data['functions'] = response['functions']
         return data
 
 class DeviceEventSerializer(serializers.ModelSerializer):
@@ -140,6 +142,7 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
             device = Device.objects.get(deviceId=deviceId)
             device.group = group
             device.save()
+            Particle.callDeviceFunctionWithArg(deviceId, "setState", group.state)
 
         group.state = validated_data.pop('state')
 
@@ -152,7 +155,9 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
             # The state has changed! Tell all devices in the group about it
             # We just hope this works...
             print("state changed!")
-            Particle.callDeviceFunctionWithArg(device.deviceId, "setState", state.state)
+            devices = Device.objects.filter(group=instance.id)
+            for device in devices:
+                Particle.callDeviceFunctionWithArg(device.deviceId, "setState", state.state)
 
         instance.state = state
         instance.name = validated_data.get('name', instance.name)
