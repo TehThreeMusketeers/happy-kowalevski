@@ -7,7 +7,7 @@ router = SimpleRouter()
 router.register(r'^', ZoneViewSet)
 
 urlpatterns = [
-    url(r'^/myzone/?$', UserLocationView.as_view()),
+    url(r'^/myzone/(?P<pk>[0-9]+)?$', UserLocationView.as_view()),
 ]
 
 urlpatterns += router.urls

@@ -1,8 +1,10 @@
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.exceptions import ValidationError, NotFound
 from lib.utils import AtomicMixin
 from zones.serializers import * 
 from zones.models import *
@@ -36,3 +38,31 @@ class UserLocationView(AtomicMixin, GenericAPIView, CreateModelMixin, RetrieveMo
         user = self.request.user
 
         return Zone.objects.filter(user=user)
+
+    def get(self, request, pk=None):
+        #bit naughty, don't care
+        userloc = UserLocation.objects.filter(user=self.request.user).first()
+        resp = UserLocationSerializer(userloc).data
+        resp.pop('id',None)
+        return Response(resp)
+
+    def post(self, request,pk=None):
+        try: 
+            userloc = self.create(request)
+        except:
+            raise ValidationError({'myzone': ["Already exists, use PUT to update",]})
+        return userloc 
+
+    def put(self, request, pk=None):
+        zone = Zone.objects.filter(id=request.data['zone']).first()
+        print(zone.user.id)
+        print(self.request.user.id)
+        if zone.user.id == self.request.user.id:
+            userloc = UserLocation.objects.filter(user=self.request.user).first()
+            userloc.zone = zone 
+            userloc.save()
+            resp = UserLocationSerializer(userloc).data
+            resp.pop('id',None)
+            return Response(resp)
+        raise NotFound()
+
