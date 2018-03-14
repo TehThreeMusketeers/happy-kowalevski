@@ -7,7 +7,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-
 class MyUserManager(BaseUserManager):
     def _create_user(self, email, password, first_name, last_name, access_token, refresh_token, is_staff, is_superuser, **extra_fields):
         """

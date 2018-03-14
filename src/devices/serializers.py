@@ -7,7 +7,7 @@ import common.util.particle as Particle
 class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
-        fields = ('id','deviceId','deviceType','deviceName','group',)
+        fields = ('id','deviceId','deviceType','deviceName','group','zone',)
 
     def create(self, validated_data):
         deviceType = DeviceType.objects.get(pk = validated_data.get('deviceType'))
@@ -179,7 +179,7 @@ class TriggerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trigger
-        fields = ('id','valuetype','state','operator','device','group','value','localActions',)
+        fields = ('id','valuetype','state','operator','device','group','value',)
 
     def create(self, validated_data):
         actions_data = validated_data.pop('localActions')

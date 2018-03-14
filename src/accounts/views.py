@@ -69,6 +69,7 @@ class NotificationTokenViewSet(ModelViewSet):
         except:
             raise PermissionDenied('You cannot create more than one notifyToken. Use PUT to update the current one')
 
+
 class UserLoginView(GenericAPIView):
     serializer_class = UserSerializer
     authentication_classes = (BasicAuthentication,)

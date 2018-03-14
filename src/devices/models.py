@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 from accounts.models import User
+from zones.models import *
 
 '''
   A device has a devicetype
@@ -71,6 +72,7 @@ class Device(models.Model):
     deviceName = models.CharField(max_length=50,null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     group = models.ForeignKey(DeviceGroup, related_name='devices', null=True, blank=True)
+    zone = models.ForeignKey(Zone, blank=True, null=True)
 
 '''
   Available comparison operators settable in a trigger,

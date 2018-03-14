@@ -9,3 +9,10 @@ class Zone(models.Model):
     lightCmd = models.CharField(max_length=50) #Cmd to control light in this zone
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+'''
+   Current location of a user
+'''
+class UserLocation(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone)
+

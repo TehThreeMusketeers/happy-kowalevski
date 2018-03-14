@@ -6,4 +6,8 @@ from zones.viewset import *
 router = SimpleRouter()
 router.register(r'^', ZoneViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [
+    url(r'^/myzone/?$', UserLocationView.as_view()),
+]
+
+urlpatterns += router.urls
