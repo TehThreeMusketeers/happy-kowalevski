@@ -66,6 +66,15 @@ def callDeviceFunction(deviceId, funcName):
                              "/" + deviceId + "/" + funcName,
                               data={"access_token":token}).content.decode()))
 
+def callDeviceFunctionWithArg(deviceId, funcName, args):
+
+    token = getExpiringAccessToken()
+
+    return json.loads(str(requests.post(API_PREFIX + API_VERSION + "products/" +
+                             str(settings.PARTICLE_PRODUCT_ID) + "/devices" +
+                             "/" + deviceId + "/" + funcName,
+                              data={"access_token":token, "args":args}).content.decode()))
+
 
 def getDeviceVariable(deviceId, varName):
 

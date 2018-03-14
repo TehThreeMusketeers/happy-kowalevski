@@ -152,6 +152,7 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
             # The state has changed! Tell all devices in the group about it
             # We just hope this works...
             print("state changed!")
+            Particle.callDeviceFunctionWithArg(device.deviceId, "setState", state.state)
 
         instance.state = state
         instance.name = validated_data.get('name', instance.name)
@@ -186,6 +187,7 @@ class TriggerSerializer(serializers.ModelSerializer):
         trigger = Trigger.objects.create(**validated_data)
         for action_data in actions_data:
             TriggerLocalAction.objects.create(trigger=trigger, **action_data)
+
         return trigger
 
     def to_representation(self, instance):

@@ -81,7 +81,7 @@ class DeviceGroupTriggerViewSet(ModelViewSet):
         serializer.save(group=group)
 
 '''
-  For creating trigger conditions attached to a group
+  For creating trigger conditions attached to a device 
 '''
 class DeviceTriggerViewSet(ModelViewSet):
     serializer_class = TriggerSerializer
@@ -97,9 +97,12 @@ class DeviceTriggerViewSet(ModelViewSet):
     def perform_create(self, serializer):
         try:
             device=Device.objects.get(pk=self.kwargs.get('deviceId'))
+            trigger = serializer.save(device=device)
+            url = self.request.build_absolute_uri() + str(trigger.id) + "/"
+            Particle.callDeviceFunctionWithArg(device.deviceId, "setTrigger", url)
         except:
             raise ValidationError({'device': ["Invalid device ID",]})
-        serializer.save(device=device)
+        return trigger
 
 '''
   Gets list of available comparison operators
