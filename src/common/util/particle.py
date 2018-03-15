@@ -34,9 +34,10 @@ def getExpiringAccessToken():
                     data={
                     "grant_type": "password",
                     "username" : settings.PARTICLE_API_USERNAME,
-                    "password" : settings.PARTICLE_API_PASSWORD,
+                    "password" : settings.PARTICLE_API_PASSWORD.strip('\''),
                 })
     json_data = json.loads(str(response.content.decode()))
+
 
     print("user: " + settings.PARTICLE_API_USERNAME);
     print("pass: " + settings.PARTICLE_API_PASSWORD);
