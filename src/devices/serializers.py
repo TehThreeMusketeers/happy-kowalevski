@@ -13,7 +13,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         deviceType = DeviceType.objects.get(pk = validated_data.get('deviceType'))
-        Particle.setDeviceFirmware(validated_data.get('deviceId'),deviceType.firmwareVersion)
+#        Particle.setDeviceFirmware(validated_data.get('deviceId'),deviceType.firmwareVersion)
         # We just hope this works...
         # TODO Add call to configure photon
 
@@ -24,7 +24,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 
         if deviceType != instance.deviceType:
             # The deviceType has changed! Flash the device with the new firmware...
-            Particle.setDeviceFirmware(instance.deviceId,deviceType.firmwareVersion)
+#            Particle.setDeviceFirmware(instance.deviceId,deviceType.firmwareVersion)
             # We just hope this works...
             print("deviceType changed!")
             
