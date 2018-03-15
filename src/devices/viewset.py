@@ -135,10 +135,6 @@ class DeviceGroupFunctionView(GenericAPIView, ListModelMixin):
         devices = Device.objects.filter(group=groupId)
 
         return DeviceTypeFunc.objects.all()
-#        for device in devices: TODO
-#            functions.append(DeviceTypeFunc.objects.filter(
-#
-#        functions = DeviceTypeFunc.objects.filter(
 
 class DeviceEventViewSet(ModelViewSet):
     serializer_class = DeviceEventSerializer

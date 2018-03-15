@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from devices.models import *
 from accounts.models import NotificationToken
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from push_notifications.models import APNSDevice, GCMDevice
 import common.util.particle as Particle
 
@@ -60,11 +62,20 @@ class DeviceEventSerializer(serializers.ModelSerializer):
         # get trigger and dispatch any actions in the group
         # dispatch any actions in the event
         trigger = validated_data['trigger']
+        device = validated_data['device']
         actions = TriggerLocalAction.objects.filter(trigger=trigger.id)
         devices = Device.objects.filter(group=trigger.group_id)
+        if trigger.valuetype.variable == "motion":
+            userloc = UserLocation.objects.filter(user=device.user).first()
+            if device.zone == userloc.zone: 
+                print("Not my problem lol")
+                raise PermissionDenied("Caused by user movement!")
         for action in actions:
             for device in devices:
-                Particle.callDeviceFunction(device.deviceId, action.function)
+                if action.function == "setLight":
+                    Particle.callDeviceFunctionWithArg(device.deviceId, action.function, device.zone.lightCmd)
+                else:
+                    Particle.callDeviceFunction(device.deviceId, action.function)
 
         # Send notification 
         token = NotificationToken.objects.filter(user=device.user).first()
@@ -157,6 +168,7 @@ class DeviceGroupSerializer(serializers.ModelSerializer):
             print("state changed!")
             devices = Device.objects.filter(group=instance.id)
             for device in devices:
+                Particle.callDeviceFunction(device.deviceId, "stopAlarm")
                 Particle.callDeviceFunctionWithArg(device.deviceId, "setState", state.state)
 
         instance.state = state

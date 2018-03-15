@@ -54,8 +54,8 @@ class UserLocationView(AtomicMixin, GenericAPIView, CreateModelMixin, RetrieveMo
 
     def put(self, request, pk=None):
         zone = Zone.objects.filter(id=request.data['zone']).first()
-        print(zone.user.id)
-        print(self.request.user.id)
+        if request.data['zone'] == None:
+            raise ValidationError("Cannot be None")
         if zone.user.id == self.request.user.id:
             userloc = UserLocation.objects.filter(user=self.request.user).first()
             userloc.zone = zone 
@@ -64,4 +64,12 @@ class UserLocationView(AtomicMixin, GenericAPIView, CreateModelMixin, RetrieveMo
             resp.pop('id',None)
             return Response(resp)
         raise NotFound()
+
+    def delete(self, request, pk=None):
+        userloc = UserLocation.objects.filter(user=self.request.user).first()
+        userloc.delete()
+        resp = UserLocationSerializer(userloc).data
+        resp.pop('id',None)
+        return Response(resp)
+
 

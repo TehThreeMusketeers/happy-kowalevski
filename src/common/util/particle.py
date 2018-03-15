@@ -12,6 +12,9 @@ from rest_framework.response import Response
 API_PREFIX = 'https://api.particle.io'
 API_VERSION = '/v1/'
 
+#API_PREFIX = 'https://requestb.in/13sg7ry1'
+#API_VERSION = ''
+
 def createShadowAccount(email):
 
     return requests.post(API_PREFIX + API_VERSION + "products/" +
