@@ -74,6 +74,7 @@ class DeviceEventSerializer(serializers.ModelSerializer):
         for action in actions:
             for device in devices:
                 if action.function == "setLight":
+                    print(device.zone)
                     Particle.callDeviceFunctionWithArg(device.deviceId, action.function, device.zone.lightCmd)
                 else:
                     Particle.callDeviceFunction(device.deviceId, action.function)
