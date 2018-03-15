@@ -25,17 +25,21 @@ export function dataFetchProtectedDataRequest() {
 export function dataFetchProtectedData(token) {
     return (dispatch, state) => {
         dispatch(dataFetchProtectedDataRequest());
-        return fetch(`${SERVER_URL}/api/v1/getdata/`, {
-            credentials: 'include',
+        return fetch(`${SERVER_URL}/api/v1/zones/myzone/`, {
+//            credentials: 'include',
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
                 Authorization: `Token ${token}`
             }
         })
-            .then(checkHttpStatus)
-            .then(parseJSON)
-            .then((response) => {
-                dispatch(dataReceiveProtectedData(response.data));
+            .then(response => {
+                if (response.ok) {
+                    response.json().then(json => {
+                        console.log(json);
+                        dispatch(dataReceiveProtectedData(JSON.stringify(json.zone)));
+                    });
+                }
             })
             .catch((error) => {
                 if (error && typeof error.response !== 'undefined' && error.response.status === 401) {
