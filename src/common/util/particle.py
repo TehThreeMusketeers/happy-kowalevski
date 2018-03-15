@@ -38,6 +38,9 @@ def getExpiringAccessToken():
                 })
     json_data = json.loads(str(response.content.decode()))
 
+    print("user: " + settings.PARTICLE_API_USERNAME);
+    print("pass: " + settings.PARTICLE_API_PASSWORD);
+
     print("response: " + response)
 
     if 'access_token' in json_data:
