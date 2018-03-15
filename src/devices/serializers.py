@@ -42,6 +42,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         data = super(DeviceSerializer, self).to_representation(instance)
         data.update(group=instance.group.id)
         response = Particle.getDeviceInfo(data['deviceId'])
+        print(response);
         if 'ok' in response:
             print("Oh no, device not found")
             print(response)
